@@ -1,44 +1,56 @@
-# ProyectoFinal-ICD2346-1
 
 # Dashboard de Visualización de Votaciones 🗳️
 
-Este proyecto es el trabajo final para la asignatura de Paradigma en Computación, donde desarrollamos una aplicación web para visualizar datos de votaciones. Utilizamos técnicas de programación orientada a objetos y funciones de orden superior, con un backend en Python y un frontend en JavaScript.
+Este proyecto, desarrollado por Ignacio Astorga y Vicente Hernández para la asignatura ICD2346-1, implementa un dashboard para la visualización interactiva de datos electorales en Chile. La aplicación se compone de un backend en Python que utiliza Flask para servir una API, y un frontend que está en desarrollo para la interacción del usuario.
 
-## Descripción del Proyecto 📜
+## Descripción de la API
 
-El objetivo es crear un dashboard interactivo que permita a los usuarios explorar datos de votaciones a través de diferentes visualizaciones gráficas. El backend se encarga de procesar y servir los datos, mientras que el frontend se centra en presentar esta información de manera intuitiva y dinámica.
+La API proporciona un mecanismo para consultar resultados electorales históricos en Chile, entregando la información de manera estructurada y lista para su visualización y análisis.
 
+## Endpoints de la API
 
-## Backend 🛠️
+La API dispone de dos endpoints principales:
 
-El backend está construido con:
+1. `/eleccion/presidencial/<int:anio>`: Devuelve un JSON con los resultados de la elección presidencial correspondiente al año especificado.
+2. `/eleccion/senadores/<int:anio>`: Devuelve un JSON con los resultados de la elección de senadores correspondiente al año especificado.
 
-- **Flask**: Un micro-framework de Python para servir nuestra API y manejar la lógica del servidor.
-- **SQL/NoSQL**: Seleccionaremos la base de datos en función de la estructura de los datos y las necesidades de consulta.
+### Formato de Respuesta
 
-### Funcionalidades Clave:
+La API responde con un objeto JSON estructurado que incluye detalles de la elección, así como un listado de candidatos y sus respectivos votos, tanto por región como totales.
 
-- `leer_datos()`: Leer archivos de datos y cargarlos en la base de datos.
-- `procesar_datos()`: Procesar y organizar los datos para su visualización.
-- `api/datos`: Endpoint para servir datos filtrados al frontend.
+## Uso de la API
 
-## Frontend 🎨
+Para hacer uso de la API, envíe solicitudes GET a los endpoints proporcionados. A continuación, un ejemplo de cómo obtener los datos de la elección presidencial para el año 2000:
 
-El frontend se encargará de:
+```javascript
+fetch('http://<tu-servidor>/eleccion/presidencial/2000')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
 
-- **Interactividad**: Permitir a los usuarios seleccionar filtros y ver los resultados actualizados.
-- **Visualización de Datos**: Usar Chart.js o Highcharts para mostrar los datos en gráficos interactivos.
+## Instalación y Configuración (No terminado)
 
-### Componentes Principales:
-
-- `FiltroDeVotaciones`: Componente para seleccionar diferentes criterios de votación.
-- `VisualizadorDeDatos`: Componente para mostrar los gráficos basados en los datos seleccionados.
-
-## Cómo Iniciar 🚀
-
-Aquí irían las instrucciones para clonar el repositorio, instalar dependencias, configurar la base de datos, y correr la aplicación localmente.
+Siga estas instrucciones para clonar el repositorio y ejecutar la aplicación en su entorno local.
 
 ```bash
-git clone https://github.com/tu_usuario/tu_repositorio.git
-cd tu_repositorio
-# Instrucciones para configurar y ejecutar
+git clone https://github.com/tu_usuario/ProyectoFinal-ICD2346-1.git
+cd ProyectoFinal-ICD2346-1
+# Instalar dependencias (omitido)
+# Iniciar el servidor
+python api.py
+```
+
+## Desarrollo
+
+### Backend
+
+El backend está diseñado para ser robusto y eficiente, procesando y serializando los datos para su consumo a través de la API RESTful.
+
+### Frontend (No terminado)
+
+[Instrucciones y descripción del frontend en desarrollo]
+
+
+---
+
+Desarrollado por Ignacio Astorga y Vicente Hernández para la asignatura ICD2346-1 en la Pontificia Universidad Católica de Valparaíso
