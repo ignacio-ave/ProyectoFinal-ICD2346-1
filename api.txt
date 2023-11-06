@@ -1,0 +1,69 @@
+
+█████████████████
+██▀▄─██▄─▄▄─█▄─▄█
+██─▀─███─▄▄▄██─██
+▀▄▄▀▄▄▀▄▄▄▀▀▀▄▄▄▀
+
+Uso de la API:
+
+1. Navegar a la carpeta 'backend' donde se encuentra el archivo 'api.py'.
+2. Ejecutar el archivo 'api.py' para iniciar el servidor de la API. Esto se puede hacer con el siguiente comando en la terminal:
+
+python api.py
+
+3. Una vez que el servidor esté corriendo, se puede acceder a los endpoints de la API utilizando cualquier cliente HTTP como cURL o Postman, o desde el navegador
+
+Interacciones con la API:
+
+- GET /eleccion/presidencial/{año}
+  Recupera los datos de la elección presidencial para el año especificado.
+
+- GET /eleccion/senadores/{año}
+  Recupera los datos de la elección senatorial para el año especificado.
+
+Formato de Respuesta:
+
+Para elecciones presidenciales:
+{
+  "fecha": "dd/mm/aaaa",
+  "año": año,
+  "cargo": "PRESIDENTE",
+  "periodo_inicio": "aaaa-mm-dd",
+  "periodo_fin": "aaaa-mm-dd",
+  "tipo": "Presidencial",
+  "candidatos": [
+    {
+      "nombre": "Nombre del Candidato",
+      "partido": "Partido Político",
+      "votos_por_region": {"1": votos, "2": votos},
+      "votos_totales": votos_totales,
+      "electo": true/false
+    },
+    ...
+  ]
+}
+
+Para elecciones senatoriales:
+{
+  "fecha": "dd/mm/aaaa",
+  "año": año,
+  "cargo": "SENADOR",
+  "periodo_inicio": "aaaa-mm-dd",
+  "periodo_fin": "aaaa-mm-dd",
+  "tipo": "Parlamentaria",
+  "candidatos": [
+    {
+      "nombre": "Nombre del Candidato",
+      "partido": "Partido Político",
+      "votos_por_region": {"1": votos, "2": votos},
+      "votos_totales": votos_totales,
+      "electo": true/false
+    },
+    ...
+  ]
+}
+
+Manejo de Errores:
+{
+  "error": "Descripción del error"
+}
