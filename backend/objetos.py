@@ -15,16 +15,16 @@ class Candidato:
 
     def to_dict(self):
         # Ordenar los votos por región según el ID de la región
-        votos_ordenados_por_region = dict(sorted(self.votos_por_region.items()))
+        votos_ordenados_por_region = {region: int(votos) for region, votos in self.votos_por_region.items()}
         return {
             'nombre': self.nombre,
             'partido': self.partido,
             'votos_por_region': votos_ordenados_por_region,
-            'votos_totales': self.votos_totales(),
+            'votos_totales': int(self.votos_totales()),
             'electo': self.electo
-
         }
 
+        
 class Eleccion:
     def __init__(self, fecha, año, cargo, periodo_inicio, periodo_fin, tipo):
         self.fecha = fecha
@@ -40,6 +40,7 @@ class Eleccion:
         self.candidatos.append(candidato)
 
     def to_dict(self):
+        candidatos_dict = [candidato.to_dict() for candidato in self.candidatos]
         return {
             'fecha': self.fecha,
             'año': self.año,
@@ -47,7 +48,7 @@ class Eleccion:
             'periodo_inicio': self.periodo_inicio,
             'periodo_fin': self.periodo_fin,
             'tipo': self.tipo,
-            'candidatos': [candidato.to_dict() for candidato in self.candidatos]
+            'candidatos': candidatos_dict
         }
 
 class EleccionPresidencial(Eleccion):
@@ -61,16 +62,13 @@ class EleccionPresidencial(Eleccion):
         super().agregar_candidato(nombre, partido, votos_por_region)
 
     def to_dict(self):
-        # Incluir la votación total nacional en la representación del diccionario
         eleccion_dict = super().to_dict()
-        eleccion_dict['votos_totales_nacionales'] = self.votos_totales_nacionales
+        eleccion_dict['votos_totales_nacionales'] = int(self.votos_totales_nacionales)
         return eleccion_dict
 
 # Clase para elecciones de senadores
 
 class EleccionSenadores(Eleccion):
-
     def to_dict(self):
-        eleccion_dict = super().to_dict()
-        return eleccion_dict
+        return super().to_dict()
 
