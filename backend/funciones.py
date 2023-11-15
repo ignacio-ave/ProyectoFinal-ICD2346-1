@@ -1,19 +1,22 @@
 import pandas as pd
 from objetos import Candidato, Eleccion, EleccionPresidencial, EleccionSenadores
 
-senadores_path = 'data/senadores_datos.csv'
-presidenciales_path = 'data/presidentes_datos.csv'
+senadores_path = 'backend/data/senadores_datos.csv'
+presidenciales_path = 'backend/data/presidentes_datos.csv'
 
 senadores_df = pd.read_csv(senadores_path)
 presidentes_df = pd.read_csv(presidenciales_path)
-
 
 def eleccion_presidencial_con_votos_por_region(año):
     # Filtrar el DataFrame presidencial por el año dado
     presidenciales_año_df = presidentes_df[presidentes_df['Año de Elección'] == año]
 
-    # Crear un objeto de elección presidencial
-    fecha_eleccion = presidenciales_año_df['Fecha de Elección'].iloc[0].strftime('%d/%m/%Y')
+    # Verificar si hay datos para el año especificado
+    if presidenciales_año_df.empty:
+        return {'error': f'No hay datos disponibles para el año {año}'}
+
+    # Corrección aquí: eliminar strftime
+    fecha_eleccion = presidenciales_año_df['Fecha de Elección'].iloc[0]
     inicio_periodo = presidenciales_año_df['Inicio de Período'].iloc[0]
     fin_periodo = presidenciales_año_df['Fin de Período'].iloc[0]
     eleccion_presidencial = EleccionPresidencial(
@@ -39,11 +42,16 @@ def eleccion_presidencial_con_votos_por_region(año):
     # Convertir el objeto de elección presidencial a un diccionario y retornarlo
     return eleccion_presidencial.to_dict()
 
-
+    
 # Función que procesa los datos de los senadores y crea un objeto de EleccionSenadores
+
 def eleccion_senadores_con_votos_por_region(año):
     # Filtrar el DataFrame de senadores por el año dado
     senadores_año_df = senadores_df[senadores_df['Año de Elección'] == año]
+
+    # Verificar si hay datos para el año especificado
+    if senadores_año_df.empty:
+        return {'error': f'No hay datos disponibles para el año {año}'}
 
     # Crear un objeto de elección de senadores
     fecha_eleccion = senadores_año_df['Fecha de Elección'].iloc[0]
@@ -71,3 +79,4 @@ def eleccion_senadores_con_votos_por_region(año):
 
     # Convertir el objeto de elección de senadores a un diccionario y retornarlo
     return eleccion_senadores.to_dict()
+
