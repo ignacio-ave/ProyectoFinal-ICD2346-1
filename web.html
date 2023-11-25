@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Data Visualization</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+        .header {
+            background: #007bff;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        #mapid {
+            height: 400px;
+            margin-bottom: 20px;
+        }
+        .slider {
+            width: 100%;
+        }
+        .chart-container {
+            margin-bottom: 20px;
+        }
+        .chart-canvas {
+            width: 100%;
+            height: 400px;
+        }
+        .footer {
+            background: #f7f7f7;
+            color: #333;
+            text-align: center;
+            padding: 10px 0;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>VISUALIZACION DE ELECCIONES RECIENTES</h1>
+</div>
+
+<div class="container mt-4">
+    
+    <!-- Timeline -->
+    <div class="row">
+        <div class="col">
+            <h2>Selecciona el año</h2>
+            <input type="range" min="2000" max="2022" value="2017" class="slider" id="yearSlider">
+        </div>
+    </div>
+    
+    <!-- Map of Chile -->
+    <div class="row mt-4">
+        <div class="col">
+            <h2>Mapa de resultado en regiones</h2>
+            <div id="mapid"></div>
+        </div>
+    </div>
+    
+    <!-- Charts -->
+    <div class="row mt-4">
+        <div class="col-md-6 chart-container">
+            <h2>Porcentaje de los partidos politicos</h2>
+            <canvas id="partyChart" class="chart-canvas"></canvas>
+        </div>
+        <div class="col-md-6 chart-container">
+            <h2> Rendimiento de Actores Políticos </h2>
+            <canvas id="performanceChart" class="chart-canvas"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <p>&copy; 2023 Election Visualization. All rights reserved.</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    // Initialize Map
+    var mymap = L.map('mapid').setView([-35.675147, -71.542969], 4); // Centered on Chile
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(mymap);
+    
+    // Initialize Charts
+    var partyChart = new Chart(document.getElementById('partyChart'), {
+        // Chart configuration...
+    });
+
+    var performanceChart = new Chart(document.getElementById('performanceChart'), {
+        // Chart configuration...
+    });
+
+    // Add event listener to the timeline slider
+    document.getElementById('yearSlider').addEventListener('input', function(e) {
+        var year = e.target.value;
+        // Fetch data and update the map and charts
+    });
+</script>
+
+</body>
+</html>
