@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from objetos import Candidato, Eleccion, EleccionPresidencial, EleccionSenadores
 
 senadores_path = 'backend/data/senadores_datos.csv'
@@ -6,6 +7,16 @@ presidenciales_path = 'backend/data/presidentes_datos.csv'
 
 senadores_df = pd.read_csv(senadores_path)
 presidentes_df = pd.read_csv(presidenciales_path)
+
+def convert_int64(obj):
+    if isinstance(obj, dict):
+        for key, value in obj.items():
+            obj[key] = convert_int64(value)
+    elif isinstance(obj, list):
+        return [convert_int64(item) for item in obj]
+    elif isinstance(obj, (np.int64, np.int32)):
+        return int(obj)
+    return obj
 
 def eleccion_presidencial_con_votos_por_region(año):
     # Filtrar el DataFrame presidencial por el año dado
@@ -39,8 +50,9 @@ def eleccion_presidencial_con_votos_por_region(año):
             votos_por_region=votos_por_region_dict
         )
 
-    # Convertir el objeto de elección presidencial a un diccionario y retornarlo
-    return eleccion_presidencial.to_dict()
+    resultado_dict = eleccion_presidencial.to_dict()
+    resultado_convertido = convert_int64(resultado_dict)
+    return resultado_convertido
 
     
 # Función que procesa los datos de los senadores y crea un objeto de EleccionSenadores
@@ -77,6 +89,8 @@ def eleccion_senadores_con_votos_por_region(año):
             electo=electo
         )
 
-    # Convertir el objeto de elección de senadores a un diccionario y retornarlo
-    return eleccion_senadores.to_dict()
+
+    resultado_dict = eleccion_senadores.to_dict()
+    resultado_convertido = convert_int64(resultado_dict)
+    return resultado_convertido
 

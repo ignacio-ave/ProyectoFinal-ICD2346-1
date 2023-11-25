@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 import pandas as pd
+import numpy as np
 import socket
 from contextlib import closing
 from funciones import eleccion_presidencial_con_votos_por_region, eleccion_senadores_con_votos_por_region
