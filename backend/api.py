@@ -4,8 +4,10 @@ import numpy as np
 import socket
 from contextlib import closing
 from funciones import eleccion_presidencial_con_votos_por_region, eleccion_senadores_con_votos_por_region
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # Rutas de la API
 @app.route('/eleccion/presidencial/<int:anio>', methods=['GET'])
