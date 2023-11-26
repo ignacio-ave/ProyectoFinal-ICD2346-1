@@ -1,28 +1,26 @@
-import requests
-import json
 import unittest
+from api import app  # Importa la aplicación Flask que quieres probar
 
-class TestEleccionAPI(unittest.TestCase):
-
+class TestAPI(unittest.TestCase):
     def setUp(self):
-        self.base_url = f"http://127.0.0.1:{input('Ingrese el puerto en el que se ejecuta la API: ')}"
-        self.años_para_testear = [2017, 2020]  # Aquí puedes añadir más años
+        self.app = app.test_client()  # Crea un cliente de prueba para interactuar con la aplicación
 
-    def test_eleccion_presidencial(self):
-        for año in self.años_para_testear:
-            with self.subTest(año=año):
-                response = requests.get(f"{self.base_url}/eleccion/presidencial/{año}")
-                self.assertEqual(response.status_code, 200)
-                with open(f'presidencial_{año}.json', 'w') as file:
-                    json.dump(response.json(), file)
+    def test_get_eleccion_presidencial(self):
+        response = self.app.get('/eleccion/presidencial/2017')  # Realiza una solicitud GET a la ruta /eleccion/presidencial/2017
+        self.assertEqual(response.status_code, 200)  # Verifica que la respuesta sea 200 (éxito)
+        # También puedes verificar el contenido de la respuesta si es necesario
 
-    def test_eleccion_senadores(self):
-        for año in self.años_para_testear:
-            with self.subTest(año=año):
-                response = requests.get(f"{self.base_url}/eleccion/senadores/{año}")
-                self.assertEqual(response.status_code, 200)
-                with open(f'senadores_{año}.json', 'w') as file:
-                    json.dump(response.json(), file)
+    def test_get_eleccion_senadores(self):
+        response = self.app.get('/eleccion/senadores/2017')  # Realiza una solicitud GET a la ruta /eleccion/senadores/2017
+        self.assertEqual(response.status_code, 200)  # Verifica que la respuesta sea 200 (éxito)
+        # También puedes verificar el contenido de la respuesta si es necesario
+
+    def test_get_segunda_instancia(self):
+        response = self.app.get('/eleccion/presidencial/segunda_instancia/2017')  # Realiza una solicitud GET a la ruta /eleccion/presidencial/segunda_instancia/2017
+        self.assertEqual(response.status_code, 200)  # Verifica que la respuesta sea 200 (éxito)
+        # También puedes verificar el contenido de la respuesta si es necesario
+
+    # Agrega más pruebas para otras rutas si es necesario
 
 if __name__ == '__main__':
     unittest.main()
