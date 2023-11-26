@@ -45,7 +45,7 @@ def find_free_port():
 
 def run_server(app):
     try:
-        port = find_free_port()
+        port = 52379
         app.run(host='127.0.0.1', port=port, debug=True)
     except OSError as e:
         print(f"Error: {e}")
