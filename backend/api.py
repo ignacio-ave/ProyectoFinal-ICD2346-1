@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import socket
 from contextlib import closing
+#from funciones import eleccion_presidencial_con_votos_por_region, eleccion_senadores_con_votos_por_region, hay_segunda_instancia, resultados_presidenciales_por_region_provincia, resultados_presidenciales_por_region_especifica
 from funciones import eleccion_presidencial_con_votos_por_region, eleccion_senadores_con_votos_por_region, hay_segunda_instancia, resultados_presidenciales_por_region_provincia, resultados_presidenciales_por_region_especifica
 from flask_cors import CORS
 
@@ -11,20 +12,21 @@ app = Flask(__name__)
 CORS(app)
 
 # Rutas de la API
-@app.route('/eleccion/presidencial/<int:anio>', methods=['GET'])
-def get_eleccion_presidencial(anio):
+@app.route('/eleccion/presidencial/<int:anio>/<string:instancia>', methods=['GET'])
+def get_eleccion_presidencial(anio,instancia):
     try:
-        resultado = eleccion_presidencial_con_votos_por_region(anio)
+        resultado = eleccion_presidencial_con_votos_por_region(anio,instancia)
         return jsonify(resultado), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/eleccion/presidencial/region/<int:anio>/<region>', methods=['GET'])
-def get_resultados_region(anio, region):
-    instancia_votacion = request.args.get('instancia', None)
+@app.route('/eleccion/presidencial/region/<int:anio>/<int:region>/<string:instancia>', methods=['GET'])
+def get_resultados_region(anio, region,instancia):
+    #instancia_votacion = request.args.get('instancia', None)
 
     try:
-        resultado = resultados_presidenciales_por_region_especifica(anio, region, instancia_votacion)
+        resultado = resultados_presidenciales_por_region_especifica(anio, region, instancia)
+        
         return jsonify(resultado), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -86,3 +88,4 @@ def run_server(app):
 
 if __name__ == "__main__":
     run_server(app)
+
