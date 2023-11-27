@@ -11,8 +11,22 @@ La API proporciona un mecanismo para consultar resultados electorales histórico
 
 La API dispone de dos endpoints principales:
 
-1. `/eleccion/presidencial/<int:anio>`: Devuelve un JSON con los resultados de la elección presidencial correspondiente al año especificado.
-2. `/eleccion/senadores/<int:anio>`: Devuelve un JSON con los resultados de la elección de senadores correspondiente al año especificado.
+1. `/eleccion/presidencial/<int:anio>`:
+   - Descripción: Devuelve los resultados de las elecciones presidenciales para un año específico.
+   - Datos: Resultados por región y candidato.
+
+2. `/eleccion/presidencial/segunda_instancia/<int:anio>`:
+   - Descripción: Verifica si hubo una segunda vuelta en las elecciones presidenciales de un año dado.
+   - Datos: Valor booleano dependiendo si hubo o no segunda instancia de votación.
+
+3. `/eleccion/presidencial/region/<int:anio>/<region>`:
+   - Descripción: Obtiene los resultados presidenciales por región específica y año.
+   - Datos: Resultados de una sola región y la votación de las provincias asociadas.
+
+4. `/eleccion/presidencial/detalle/<int:anio>`:
+   - Descripción: Devuelve los resultados de las elecciones presidenciales para un año específico incluyendo provincias y regiones.
+   - Datos: Resultados de todas las regiones, con sus provincias y las instancias de votación.
+
 
 ### Formato de Respuesta
 
