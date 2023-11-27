@@ -3,7 +3,7 @@ import numpy as np
 from objetos import Candidato, Eleccion, EleccionPresidencial, EleccionSenadores
 
 #senadores_path = 'backend/data/senadores_datos.csv'
-presidenciales_path = '/workspaces/ProyectoFinal-ICD2346-1/backend/data/presidentes_datos.csv'
+presidenciales_path = 'backend/data/presidentes_datos.csv'
 
 # senadores_df = pd.read_csv(senadores_path)
 presidentes_df = pd.read_csv(presidenciales_path)
@@ -19,21 +19,15 @@ def convert_int64(obj):
     return obj
 
 
-def eleccion_presidencial_con_votos_por_region(año):
-    # Primero intentar con "VOTACIÓN ÚNICA"
-    filtro_unico = (presidentes_df['Año de Elección'] == año) & (presidentes_df['Votación Presidencial'] == "ÚNICA VOTACIÓN")
-    presidenciales_año_df = presidentes_df[filtro_unico]
+def eleccion_presidencial_con_votos_por_region(año, instancia):
+    filtro = (presidentes_df['Año de Elección'] == año) & (presidentes_df['Votación Presidencial'] == instancia)
+    presidenciales_año_df = presidentes_df[filtro]
 
-    # Si no hay datos para "VOTACIÓN ÚNICA", intentar con "PRIMERA VOTACIÓN"
+    # Verificar si hay datos disponibles
     if presidenciales_año_df.empty:
-        filtro_primera = (presidentes_df['Año de Elección'] == año) & (presidentes_df['Votación Presidencial'] == "PRIMERA VOTACIÓN")
-        presidenciales_año_df = presidentes_df[filtro_primera]
+        return {'error': f'No hay datos disponibles para el año {año} y la instancia {instancia}'}
 
-        # Si tampoco hay datos para "PRIMERA VOTACIÓN", devolver un error
-        if presidenciales_año_df.empty:
-            return {'error': f'No hay datos disponibles para el año {año}'}
-
-    # Corrección aquí: eliminar strftime
+    # Detalles de la elección
     fecha_eleccion = presidenciales_año_df['Fecha de Elección'].iloc[0]
     inicio_periodo = presidenciales_año_df['Inicio de Período'].iloc[0]
     fin_periodo = presidenciales_año_df['Fin de Período'].iloc[0]
@@ -46,10 +40,10 @@ def eleccion_presidencial_con_votos_por_region(año):
         tipo='Presidencial'
     )
 
-    # Agregar candidatos con votos por región al objeto de elección presidencial
+    # Sumar votos por región para cada candidato
     for candidato in presidenciales_año_df['Candidato (a)'].unique():
         votos_por_region = presidenciales_año_df[presidenciales_año_df['Candidato (a)'] == candidato]
-        votos_por_region_dict = votos_por_region.set_index('Id Región')['Votos Totales'].to_dict()
+        votos_por_region_dict = votos_por_region.groupby('Id Región')['Votos Totales'].sum().to_dict()
         partido = votos_por_region['Partido'].iloc[0]
         eleccion_presidencial.agregar_candidato(
             nombre=candidato,
@@ -60,6 +54,7 @@ def eleccion_presidencial_con_votos_por_region(año):
     resultado_dict = eleccion_presidencial.to_dict()
     resultado_convertido = convert_int64(resultado_dict)
     return resultado_convertido
+
 
 def hay_segunda_instancia(año):
     filtro_segunda = (presidentes_df['Año de Elección'] == año) & (presidentes_df['Votación Presidencial'] == "SEGUNDA VOTACIÓN")
@@ -81,8 +76,27 @@ def resultados_presidenciales_por_region_provincia(año):
 
     return resultados_finales
 
-def resultados_presidenciales_por_region_especifica(año, region, instancia_votacion=None):
-    if instancia_votacion is None:
+def resultados_presidenciales_por_region_especifica(año, region_numero, instancia_votacion):
+
+    
+    dicc={'DE TARAPACA': 1,
+        'DE ANTOFAGASTA': 2,
+        'DE ATACAMA': 3,
+        'DE COQUIMBO': 4,
+        'DE VALPARAISO': 5,
+        "DEL LIBERTADOR BDO. O'HIGGINS": 6,
+        'DEL MAULE': 7,
+        'DEL BIOBIO': 8,
+        'DE LA ARAUCANIA': 9,
+        'DE LOS LAGOS': 10,
+        'AISEN DEL GRAL. CARLOS IBAÑEZ': 11,
+        'DE MAGALLANES Y ANTARTICA CH.': 12,
+        'METROPOLITANA DE SANTIAGO': 13,
+        'DE LOS RIOS': 14,
+        'ARICA Y PARINACOTA': 15}
+
+    region = list(dicc.keys())[list(dicc.values()).index(region_numero)]
+    '''if instancia_votacion is None:
         for instancia in ["ÚNICA VOTACIÓN", "PRIMERA VOTACIÓN"]:
             filtro = (presidentes_df['Año de Elección'] == año) & (presidentes_df['Votación Presidencial'] == instancia) & (presidentes_df['Región'] == region)
             df_filtrado = presidentes_df[filtro]
@@ -91,11 +105,17 @@ def resultados_presidenciales_por_region_especifica(año, region, instancia_vota
     else:
         filtro = (presidentes_df['Año de Elección'] == año) & (presidentes_df['Votación Presidencial'] == instancia_votacion) & (presidentes_df['Región'] == region)
         df_filtrado = presidentes_df[filtro]
+    '''
+    filtro = (presidentes_df['Año de Elección'] == año) & (presidentes_df['Votación Presidencial'] == instancia_votacion) & (presidentes_df['Id Región'] == region_numero) 
+    df_filtrado = presidentes_df[filtro]
 
     if df_filtrado.empty:
-        return {'error': f'No hay datos disponibles para el año {año}, región {region} y la instancia de votación especificada.'}
+        return {'error': f'No hay datos disponibles para el año {año}, región {region_numero} y la instancia de votación especificada.'}
 
-    resultados = df_filtrado.groupby(['Provincia', 'Candidato (a)']).agg({'Votos Totales': 'sum'}).reset_index().to_dict(orient='records')
+    #resultados = df_filtrado.groupby(['Provincia', 'Candidato (a)']).agg({'Votos Totales': 'sum'}).reset_index().to_dict(orient='records')
+    resultados = df_filtrado.groupby(['Candidato (a)','Partido']).agg({'Votos Totales': 'sum'})
+    resultados=resultados.sort_values('Votos Totales', ascending=False)
+    resultados = resultados.reset_index().to_dict(orient='records')
     return resultados
 
 
