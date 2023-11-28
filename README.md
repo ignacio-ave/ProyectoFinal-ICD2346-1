@@ -36,12 +36,12 @@ fetch('http://<tu-servidor>/eleccion/presidencial/2000')
 
 ## Instalación y Configuración 
 
-Siga estas instrucciones para clonar el repositorio y ejecutar la aplicación en su entorno local.
+Siga estas instrucciones para clonar el repositorio y ejecutar l.
 
-
+```bash
 -git clone https://github.com/tu_usuario/ProyectoFinal-ICD2346-1.git
 cd ProyectoFinal-ICD2346-1
-
+```
 
 ### Backend
 
