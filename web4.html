@@ -155,6 +155,11 @@
 
     
         function setupRegionClickHandlers(data, anio, instancia) {
+            /*
+            Recibe los datos el año y la instancia
+            aplica el limpiador de instancia anteriores y us el mapa de regiones para llamar a
+            handleregionclick y padarle el numero de la region clickeada la data el año y la instancia
+            */
     removeRegionClickHandlers(); // Llamar esto primero para limpiar manejadores anteriores
     Object.keys(mapaRegiones).forEach(regionId => {
         const regionElement = document.getElementById(mapaRegiones[regionId]);
@@ -167,6 +172,9 @@
 }
 
 function removeRegionClickHandlers() {
+    /*
+    remueve las instancias dew click anteriores para que no se solapen
+    */
     Object.keys(mapaRegiones).forEach(regionId => {
         const regionElement = document.getElementById(mapaRegiones[regionId]);
         if (regionElement && regionElement.clickHandler) {
@@ -177,6 +185,11 @@ function removeRegionClickHandlers() {
 }
 
 function drawTable(dataCandidatos, regionId) {
+    /*
+    hace uso de una table de google charts para mostrar los nombres de candidatos su partido y sus votos en el id de la region 
+    
+    
+    */
     // Verificar si dataCandidatos es un array
     
     if (!Array.isArray(dataCandidatos) || dataCandidatos.length === 0) {
@@ -234,6 +247,12 @@ function drawTable(dataCandidatos, regionId) {
 
     
 function handleRegionClick(regionId, data, anio, instancia) {
+    /*
+    Esta funcion recibe el ID de la region clickeada, la data de la eleccion, el año y la instancia
+
+    esta funcion hace un fetch para recibir informacion solo de esa region y pasarsela a drawTable junto
+    con el Id de la region 
+    */
     console.log('AÑO:', anio);
     const url = `http://localhost:52379/eleccion/presidencial/region/${anio}/${regionId}/${instancia}`;
     const infoRegion = document.getElementById('infoRegion');
@@ -255,18 +274,16 @@ function handleRegionClick(regionId, data, anio, instancia) {
 
 
 
-    
-
-
-    // Asegúrate de que 'handleRegionClick' se llame correctamente cuando se haga clic en una región
-    // Por ejemplo:
-    // elementoRegion.addEventListener('click', () => handleRegionClick(regionId, anio));
-    
-    
-    // Llamar a setupRegionClickHandlers después de que los datos se han cargado y el SVG se ha actualizado
-    
-        //funcion que recibe el json y lo muestra en el svg
         function getEleccionPresidencial(valor) {
+            /*
+            Esta funcion recive valor el cual es el selector de la eleccion
+
+            el valor viene con 2 parametros el año y la instancia que vienen separados por un "_" 
+            Luego hace uso del fetch para recibir la data de esa eleccion
+
+            Esta funcion tambien llama a updateSVG() y le pasa la data recibida por la api
+            
+            */
             var partes = valor.split('_');
             var anio = partes[0];
             var instancia = partes[1];
@@ -285,7 +302,9 @@ function handleRegionClick(regionId, data, anio, instancia) {
             })
             .catch(error => console.error('Error:', error));
     }
-    
+
+
+    //Id de su numero de region y el id del svg
     const mapaRegiones = {
         "1": "CHL2693", //"nombre": "Tarapacá" },
         "2": "CHL2695", //"nombre": "Antofagasta" },
@@ -302,11 +321,11 @@ function handleRegionClick(regionId, data, anio, instancia) {
         "13": "CHL2698", //"nombre": "Región Metropolitana de Santiago" },
         "14": "CHL2701", //"nombre": "Los Ríos" },
         "15":  "CHL2694" //"nombre": "Arica y Parinacota" }
-        // Asegúrate de que todos los IDs y nombres de las regiones estén correctos
+       
     };
     
     
-    // Llama a esta función después de recibir los datos y colorear las regione
+    // Colores que representan a los candidatos por nombre
     const coloresCandidatos = {
     'PATRICIO AYLWIN': '#1C6164',
     'HERNAN BUCHI': '#FDBA2F',
@@ -349,6 +368,12 @@ function handleRegionClick(regionId, data, anio, instancia) {
 
 
 function actualizarInformacionCandidato(candidatoGanador, urlImagen) {
+    /*
+    Esta funcion recibe el Candidato ganador a nivel nacional osea el candidato con mas votos de la suma de votos de todas las regiones y un url de una imagen de este,
+
+    esta funcion actualiza el contenedorCandidato
+    */
+    
     // Encuentra el contenedor por ID
     const contenedorCandidato = document.getElementById('contenedorCandidatoGanador');
 
@@ -374,15 +399,17 @@ function actualizarInformacionCandidato(candidatoGanador, urlImagen) {
     contenedorCandidato.appendChild(imagenCandidato);
 }
 
-// Ejemplo de uso
-// actualizarInformacionCandidato('Nombre del Candidato', 'url_de_la_imagen_del_candidato.jpg');
-
-
-
 
 async function updateSVG(data, anio, instancia) {
+    /*
+    Esta funcion recibe la data de (elecciones/año/instancia) el año seleccionado y la instancia
 
-
+    Esta funcion se encarga de colorear el svg por regiones dependiendo de que candidato obtuvo mas votos en esta,
+    lo hace con todas las regiones del svg por lo que si en la eleccion la region no se encuentra se colorea gris.
+    
+    Tambien le envia informacion a actualizarInformacionCandidato(), drawChart(), setupRegionClickHandlers()
+    
+    */
     dicc= {
         'PATRICIO AYLWIN': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Patricio_Aylwin_%281990%29.jpg/540px-Patricio_Aylwin_%281990%29.jpg',
         'EDUARDO FREI': 'https://upload.wikimedia.org/wikipedia/commons/8/8b/Eduardo_Frei_Ruiz-Tagle_1999_%28Cropped_%26_edited%29.png',
@@ -420,10 +447,6 @@ async function updateSVG(data, anio, instancia) {
     // Aquí puedes llamar a actualizarInformacionCandidato con el nombre y la URL de la imagen del candidato ganador
     actualizarInformacionCandidato(candidatoGanadorNacional, urll);
 
-
-
-
-
     for (let i = 1; i <= 15; i++) {
         let maxVotos = 0;
         let candidatoGanador = null;
@@ -448,7 +471,15 @@ async function updateSVG(data, anio, instancia) {
     drawChart(data);
     setupRegionClickHandlers(data, anio, instancia);
 }  
+
+
+
+
 function drawChart(dataCandidatos) {
+    /*Esta funcion se encarga de recibir los datos de elecciones/año/instancia
+    Muestra los los votos por candidato a nivel nacional en un grafico de torta de
+    Google Charts
+    */
     if (!dataCandidatos || !dataCandidatos.candidatos) {
         console.error("Datos de candidatos no proporcionados o en formato incorrecto");
         return;
@@ -480,7 +511,6 @@ function drawChart(dataCandidatos) {
 
 
     </script>
-    
-    
+     
     </body>
     </html>
